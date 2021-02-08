@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div style="background-color: lightcoral; width: 25%">
+        <h2>Deleting user</h2>
+<!--        <p>Name: <span th:text="${deletedUser.getName()}"></span></p>-->
+        <p>Name: [[${deletedUser.getName()}]]</p>
+        <p>Surname: [[${deletedUser.getSurname()}]]</p>
+        <p>Age: [[${deletedUser.getAge()}]]</p>
+        <p>Email: [[${deletedUser.email}]]</p>
+        <p>Roles:</p>
+        <ul th:each="role : ${deletedUser.getRoles()}">
+            <li th:utext="${role}">role</li>
+        </ul>
+
+        <br>
+
+        <form th:method="DELETE" th:action="@{/admin}" th:object="${deletedUser}">
+            <input type="hidden" th:field="*{id}" id="id">
+            <input type="submit" value="Delete">
+        </form>
+
+        <br>
+
+        <input type="button" value="Logout" onclick="window.location.href = '/logout'"/>
+
+    </div>
+</body>
+</html>

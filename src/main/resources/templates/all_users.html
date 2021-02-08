@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<!--<style>-->
+<!--    table {-->
+<!--        text-align: center;-->
+<!--        border-collapse: collapse;-->
+<!--    }-->
+<!--</style>-->
+
+<body>
+
+<div>
+    <table border="1" style="border-collapse: collapse">
+        <caption>User list</caption>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr th:each="user : ${users}">
+
+            <td th:utext="${user.getName()}">name</td>
+
+            <td th:utext="${user.getSurname()}">surname</td>
+
+            <td th:utext="${user.getAge()}">age</td>
+
+            <td th:utext="${user.getEmail()}">email</td>
+
+            <td>
+                <ul th:each="role : ${user.getRoles()}">
+                    <li th:utext="${role}">role</li>
+                </ul>
+            </td>
+
+            <td>
+                <a th:href="@{/admin/{id}/update(id=${user.getId()})}" th:text="Update">Update</a> or
+                <a th:href="@{/admin/{id}/delete(id=${user.getId()})}" th:text="Delete">Delete</a>
+            </td>
+
+        </tr>
+    </table>
+
+    <br>
+
+    <input type="button" value="Add new user" onclick="window.location.href = '/admin/add-new-user'"/>
+    <input type="button" value="Logout" onclick="window.location.href = '/logout'"/>
+</div>
+</body>
+</html>
