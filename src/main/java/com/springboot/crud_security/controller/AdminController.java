@@ -18,14 +18,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
+    private final UserService userService;
+    private final RoleService roleService;
+    private final BCryptPasswordEncoder passwordEncoder;
     private String patchedPassword;
+
+    @Autowired
+    public AdminController(UserService userService
+            , RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping
     public String getAllUsers(Model model) {
@@ -98,11 +102,10 @@ public class AdminController {
     }
 
     private Set<Role> getSetFromArray(String[] roles) {
-        Set<Role> rolesSet = roleService.getAllRoles()
-                            .stream().filter(role -> Arrays.asList(roles)
-                            .contains(role.getRoleName().name()))
-                            .collect(Collectors.toSet());
 
-        return rolesSet;
+        return roleService.getAllRoles()
+                            .stream().filter(role -> Arrays.asList(roles)
+                            .contains(role.getRoleName()))
+                            .collect(Collectors.toSet());
     }
 }

@@ -15,9 +15,12 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController {
 
-    @Qualifier("userDetailsServiceImpl")
+    private final UserDetailsService userDetailsService;
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    public UserController(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @GetMapping
     public String getUserPage(Principal principal, Model model) {

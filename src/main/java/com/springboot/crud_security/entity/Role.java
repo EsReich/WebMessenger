@@ -22,9 +22,11 @@ public class Role implements GrantedAuthority {
     @Column(name = "id")
     private int id;
 
-    @Enumerated(value = EnumType.STRING)
+//    @Enumerated(value = EnumType.STRING)
+//    @Column(name = "name")
+//    private RoleName roleName;
     @Column(name = "name")
-    private RoleName roleName;
+    private String roleName;
 
     @ManyToMany(mappedBy = "roles")
 //    @JoinTable(name = "user_roles"
@@ -32,13 +34,13 @@ public class Role implements GrantedAuthority {
 //            , inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 
-    public Role(RoleName roleName) {
+    public Role(String roleName) {
         this.roleName = roleName;
     }
 
     @Override
     public String getAuthority() {
-        return roleName.name();
+        return roleName;
     }
 
     @Override
