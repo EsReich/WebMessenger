@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+!/src/main/resources/templates/user_create.html
+src/main/resources/templates/user_page_training.html
+!/src/main/resources/templates/user_delete.html
+!/src/main/resources/templates/user_update.html

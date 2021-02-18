@@ -2,36 +2,85 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <title>User page</title>
+
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            height:100vh;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
 </head>
 <body>
-<!--        <p>Name: <span th:text="${principal.getName()}">name</span></p>-->
 
-    <div th:object = "${user}">
-        <h2>Welcome</h2>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+            <span class="navbar-brand" th:object = "${user}">
+                <b>[[*{email}]]</b> with roles: <span th:each="role : *{roles}" >[[${role}]] </span>
+            </span>
 
-<!--        <p>name: <span th:text="*{name}">name</span></p>-->
+        <a class="nav-link justify-content-end" style="color:lightgray" href="/logout"/>Logout</a>
 
-        <p>name: [[*{name}]]</p>
+    </div>
+</nav>
 
-        <p>surname: [[*{surname}]]</p>
+<br>
 
-        <p>age: [[*{age}]]</p>
+<div class="row flex-fill d-flex h-100 justify-content-start">
 
-        <p>email: [[*{email}]]</p>
-
-        <p>roles:</p>
-        <ul th:each="role : ${user.getRoles()}">
-            <li th:utext="${role}">role</li>
-        </ul>
-
-        <br>
-
-        <form th:method="post" th:action="@{/logout}">
-            <input type="submit" value="Logout">
-        </form>
-<!--        <a href="/logout">Logout</a>-->
+    <div class="nav flex-column nav-pills col-2 bg-light" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link active" id="v-pills-user-tab" data-bs-toggle="pill" href="#v-pills-user" role="tab" aria-controls="v-pills-user" aria-selected="true">User</a>
     </div>
 
+    <div class="tab-content col-10" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
+            <h1>User information-page</h1>
+
+            <br>
+
+            <div class="card">
+                <h3 class="card-header">About user</h3>
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:object = "${user}">
+
+                            <td th:utext="*{name}">name</td>
+
+                            <td th:utext="*{surname}">surname</td>
+
+                            <td th:utext="*{age}">age</td>
+
+                            <td th:utext="*{email}">email</td>
+
+                            <td>
+                                <span th:each="role : *{roles}" >[[${role}]] </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 </body>
 </html>
