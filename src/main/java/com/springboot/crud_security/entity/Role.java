@@ -1,5 +1,7 @@
 package com.springboot.crud_security.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,9 +28,12 @@ public class Role implements GrantedAuthority {
 //    @Column(name = "name")
 //    private RoleName roleName;
     @Column(name = "name")
+//    @JsonValue
     private String roleName;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles")
+//    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(name = "user_roles"
 //            , joinColumns = @JoinColumn(name = "role_id")
 //            , inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -38,6 +43,7 @@ public class Role implements GrantedAuthority {
         this.roleName = roleName;
     }
 
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return roleName;

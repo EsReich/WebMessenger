@@ -1,5 +1,7 @@
 package com.springboot.crud_security.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,8 +16,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements UserDetails {
 
+    @JsonIgnore
     @Column(name = "enabled")
     private boolean isActive = true;
 
@@ -65,6 +69,7 @@ public class User implements UserDetails {
 //                .collect(Collectors.toSet());
 //    }
 
+    @JsonIgnore
     @Override
     public Set<Role> getAuthorities() {
         return roles;
@@ -75,28 +80,34 @@ public class User implements UserDetails {
         return password;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return isActive;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return isActive;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return isActive;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return isActive;
     }
+
 }

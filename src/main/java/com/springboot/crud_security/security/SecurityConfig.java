@@ -31,10 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/user").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+                .antMatchers("/admin", "/api/admin/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/user", "/api/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+                .anyRequest().authenticated()
                 .and().formLogin()
-                .successHandler(successUserHandler);
+                .successHandler(successUserHandler)
+
+                .and()  //??
+                .httpBasic(); //??
 //                .and()
 //                .logout()
 //                .logoutSuccessUrl("/login")
@@ -48,6 +52,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 //                // указываем URL при удачном логауте
 //                .logoutSuccessUrl("/login?logout");
+
+        //or
+//        http
+//                .authorizeRequests(authorizeRequests ->
+//                        authorizeRequests
+//                                .antMatchers("api/admin/**").hasRole("ADMIN")
+//                                .antMatchers("api/**").access("hasRole('ADMIN') and hasRole('DBA')")
+//                )
+//                .formLogin();
+
+        //or
+//        http
+//                .csrf().disable()
+//                .authorizeRequests(authorize -> authorize
+//                        .mvcMatchers("/admin", "/api/admin/**").hasRole("ADMIN")
+//                        .mvcMatchers("/user", "api/user/**").access("hasRole('ADMIN') and hasRole('USER')")
+//                        .anyRequest().denyAll()
+//                )
+//                .formLogin()
+//                .successHandler(successUserHandler);
     }
 
     @Bean
