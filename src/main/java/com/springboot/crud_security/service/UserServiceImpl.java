@@ -3,6 +3,7 @@ package com.springboot.crud_security.service;
 import com.springboot.crud_security.dao.UserRepository;
 import com.springboot.crud_security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +12,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveOrUpdateUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -33,13 +37,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
 //        Optional<User> optionalUser = userRepository.findById(id);
 //
 //        if (optionalUser.isPresent()) {
 //            return optionalUser.get();
 //        }
 //        return null;
-        return userRepository.findById(id).orElseGet(User::new);
+        return userRepository.findByIdFetchRoles(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.springboot.crud_security.service;
+package com.springboot.crud_security.security;
 
 import com.springboot.crud_security.dao.UserRepository;
 import com.springboot.crud_security.entity.User;
@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmailFetchRoles(email);
 
         if(user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found", email));

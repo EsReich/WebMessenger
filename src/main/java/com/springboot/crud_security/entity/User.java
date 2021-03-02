@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -47,7 +47,7 @@ public class User implements UserDetails {
 //            cascade = {CascadeType.DETACH, CascadeType.MERGE
 //                    , CascadeType.PERSIST, CascadeType.REFRESH},
 //            fetch = FetchType.EAGER)
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_roles"
             , joinColumns = @JoinColumn(name = "user_id")
             , inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -109,5 +109,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isActive;
     }
-
 }

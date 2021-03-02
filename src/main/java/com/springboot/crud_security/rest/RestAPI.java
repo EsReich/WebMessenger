@@ -4,9 +4,9 @@ import com.springboot.crud_security.entity.User;
 import com.springboot.crud_security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,44 +16,41 @@ import java.util.List;
 public class RestAPI {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public RestAPI(UserService userService, BCryptPasswordEncoder passwordEncoder
+    public RestAPI(UserService userService
             , @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/current")
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
-        return user;
+    public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/admin")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping("/admin")
-    public User saveUser(@RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
         userService.saveOrUpdateUser(user);
-        return (User) userDetailsService.loadUserByUsername(user.getEmail());
+        return ResponseEntity.ok((User) userDetailsService.loadUserByUsername(user.getEmail()));
     }
 
-    @PatchMapping("/admin")
-    public User updateUser(@RequestBody User user) {
+    @PutMapping("/admin")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.saveOrUpdateUser(user);
-        return user;
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/admin/{id}")
-    public User deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id) {
         User deletedUser = userService.getUserById(id);
         userService.deleteUser(deletedUser);
-        return deletedUser;
+        return ResponseEntity.ok(deletedUser);
     }
 }

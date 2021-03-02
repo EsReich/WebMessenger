@@ -190,8 +190,8 @@
                 roles: getArrayOfRolesFromSelectElement(editRolesSelectElement)
             }
 
-            sendRequest('PATCH', adminApiURL, editedUser).then(editedUser => {
-                console.log('PATCH request')
+            sendRequest('PUT', adminApiURL, editedUser).then(editedUser => {
+                console.log('PUT request')
 
                 tableRow.children[0].textContent = editedUser.name
                 tableRow.children[1].textContent = editedUser.surname
@@ -284,7 +284,7 @@
         deleteForm.addEventListener('submit', function (evt) {
             evt.preventDefault()
 
-            sendRequest('DELETE', adminApiURL + '/' + user.id).then(deletedUser => {
+            sendRequest('DELETE', adminApiURL + '/' + user.id).then(() => {
                 console.log('DELETE request')
 
                 usersTableBody.removeChild(tableRow)
