@@ -2,13 +2,18 @@ package com.springboot.crud_security.service;
 
 import com.springboot.crud_security.dao.UserRepository;
 import com.springboot.crud_security.entity.User;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Cacheable(value = "myCache")
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;

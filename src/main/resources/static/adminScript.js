@@ -1,5 +1,8 @@
 
-    const currentUserURL = 'http://localhost:8080/api/current';
+    // import {currentUserURL, sendRequest, getStringOfRolesFromArray} from './util.js'
+    import * as util from './util.js'
+    import {messageURL} from "./util.js";
+
     const adminApiURL = 'http://localhost:8080/api/admin';
 
     const usersTableBody = document.querySelector('#usersTableBody')
@@ -13,37 +16,6 @@
     const deleteModalBlockTemplate =
         document.querySelector('#deleteModalBlockTemplate').content.querySelector('td')
 
-
-    function sendRequest(method, url, body) {
-        let headers = {
-            'Content-Type': 'application/json'
-        }
-
-        return fetch(url, {
-            method: method,
-            body: JSON.stringify(body),
-            headers: headers
-        }).then(response => {
-            if (response.ok) {
-                return response.json()
-            }
-
-            return response.json().then(error => {
-                let e = new Error('Failure to receive data')
-                e.data = error
-                throw e
-            })
-        })
-    }
-
-    function getStringOfRolesFromArray(roles) {
-        let stringOfRoles = ''
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i].roleName.slice(5) + ' '
-            stringOfRoles += role
-        }
-        return stringOfRoles
-    }
 
     function getArrayOfRolesFromSelectElement(selectElement) {
         let roles = []
@@ -60,46 +32,6 @@
         return roles
     }
 
-    let clickCloseFabric = (modal) => {
-        return (evt) => {
-            if (evt.target == modal) {
-                closeModal(modal)
-            }
-        }
-    }
-
-    let keydownCloseFabric = (modal) => {
-        return (evt) => {
-            if (evt.keyCode == 27) {
-                closeModal(modal)
-            }
-        }
-    }
-
-    function openModal(modal) {
-        document.querySelector('#backdrop').style.display = 'block'
-        modal.style.display = 'block'
-        modal.classList.add('show')
-
-        let clickCloseModal = clickCloseFabric(modal)
-        let keydownCloseModal = keydownCloseFabric(modal)
-
-        window.addEventListener('click', clickCloseModal)
-        window.addEventListener('keydown', keydownCloseModal)
-    }
-
-    function closeModal(modal) {
-        document.querySelector('#backdrop').style.display = 'none'
-        modal.style.display = 'none'
-        modal.classList.remove('show')
-
-        let clickCloseModal = clickCloseFabric(modal)
-        let keydownCloseModal = keydownCloseFabric(modal)
-
-        window.removeEventListener('click', clickCloseModal)
-        window.removeEventListener('keydown', keydownCloseModal)
-    }
-
     function addUserToTable(user) {
         let tableRow = tableRowTemplate.cloneNode(true)
         tableRow.id = 'userTableRow' + user.id
@@ -107,7 +39,7 @@
         tableRow.children[1].textContent = user.surname
         tableRow.children[2].textContent = user.age
         tableRow.children[3].textContent = user.email
-        tableRow.children[4].textContent = getStringOfRolesFromArray(user.roles)
+        tableRow.children[4].textContent = util.getStringOfRolesFromArray(user.roles)
 
         //    <<Создание и добавление модальных блоков для edit и delete>>
 
@@ -125,14 +57,14 @@
         btnCloseEditFooter.id += user.id
 
         editModalActivatingBtn.addEventListener('click', function () {
-            openModal(editModal)
+            util.openModal(editModal)
 
             btnCloseEditHeader.addEventListener('click', function () {
-                closeModal(editModal)
+                util.closeModal(editModal)
             })
 
             btnCloseEditFooter.addEventListener('click', function () {
-                closeModal(editModal)
+                util.closeModal(editModal)
             })
         })
 
@@ -165,7 +97,7 @@
         editPassword.id += user.id
 
 
-        let stringOfEditRoles = getStringOfRolesFromArray(user.roles)
+        let stringOfEditRoles = util.getStringOfRolesFromArray(user.roles)
         if (stringOfEditRoles.includes('USER')) {
             editForm.querySelector('#edit_roles').children[0].selected = true
         }
@@ -190,20 +122,20 @@
                 roles: getArrayOfRolesFromSelectElement(editRolesSelectElement)
             }
 
-            sendRequest('PUT', adminApiURL, editedUser).then(editedUser => {
-                console.log('PUT request')
+            util.sendRequest('PUT', adminApiURL, editedUser).then(editedUser => {
+                console.log('PUT user request')
 
                 tableRow.children[0].textContent = editedUser.name
                 tableRow.children[1].textContent = editedUser.surname
                 tableRow.children[2].textContent = editedUser.age
                 tableRow.children[3].textContent = editedUser.email
-                tableRow.children[4].textContent = getStringOfRolesFromArray(editedUser.roles)
+                tableRow.children[4].textContent = util.getStringOfRolesFromArray(editedUser.roles)
 
                 deleteName.value = editedUser.name
                 deleteSurname.value = editedUser.surname
                 deleteAge.value = editedUser.age
                 deleteEmail.value = editedUser.email
-                stringOfDeleteRoles = getStringOfRolesFromArray(editedUser.roles)
+                stringOfDeleteRoles = util.getStringOfRolesFromArray(editedUser.roles)
 
                 if (stringOfDeleteRoles.includes('USER')) {
                     deleteRolesSelectElement.children[0].selected = true
@@ -217,7 +149,7 @@
                 }
             })
 
-            closeModal(editModal)
+            util.closeModal(editModal)
         })
 
         //Delete
@@ -234,14 +166,14 @@
         btnCloseDeleteFooter.id += user.id
 
         deleteModalActivatingBtn.addEventListener('click', function () {
-            openModal(deleteModal)
+            util.openModal(deleteModal)
 
             btnCloseDeleteHeader.addEventListener('click', function () {
-                closeModal(deleteModal)
+                util.closeModal(deleteModal)
             })
 
             btnCloseDeleteFooter.addEventListener('click', function () {
-                closeModal(deleteModal)
+                util.closeModal(deleteModal)
             })
         })
 
@@ -284,13 +216,13 @@
         deleteForm.addEventListener('submit', function (evt) {
             evt.preventDefault()
 
-            sendRequest('DELETE', adminApiURL + '/' + user.id).then(() => {
-                console.log('DELETE request')
+            util.sendRequest('DELETE', adminApiURL + '/' + user.id).then(() => {
+                console.log('DELETE user request')
 
                 usersTableBody.removeChild(tableRow)
             })
 
-            closeModal(deleteModal)
+            util.closeModal(deleteModal)
         })
 
         //==========>
@@ -298,27 +230,75 @@
         tableRow.appendChild(deleteModalBlock)
         usersTableBody.appendChild(tableRow)
     }
-    //<==============>
+    //<======конец функции addUserToTable(user)======>
 
-    sendRequest('GET', currentUserURL).then(currentUser => {
-        console.log('GET current request')
+    util.sendRequest('GET', util.currentUserURL).then(currentUser => {
+        console.log('GET current user request')
+
+        globalCurrentUser = currentUser
 
         //Заполнение хедера
         let navbarBrands = document.querySelector('.navbar-brand').children
         navbarBrands[0].textContent = currentUser.email
-        navbarBrands[1].textContent = getStringOfRolesFromArray(currentUser.roles)
+        navbarBrands[1].textContent = util.getStringOfRolesFromArray(currentUser.roles)
         //Заполнение principal-таблицы
         let principalTableRow = document.querySelector('#principalTableRow')
         principalTableRow.children[0].textContent = currentUser.name
         principalTableRow.children[1].textContent = currentUser.surname
         principalTableRow.children[2].textContent = currentUser.age
         principalTableRow.children[3].textContent = currentUser.email
-        principalTableRow.children[4].textContent = getStringOfRolesFromArray(currentUser.roles)
+        principalTableRow.children[4].textContent = util.getStringOfRolesFromArray(currentUser.roles)
+
+        //Вывод сообщений чата
+        util.sendRequest('GET', util.messageURL).then(messages => {
+            console.log('GET all messages request')
+
+            util.printChat(messages, currentUser)
+
+            // messages.forEach(function (message) {
+                // if (currentUser.name + ' ' + currentUser.surname === message.author) {
+                //     //Создание отправленного сообщения
+                //     util.printSentMessage(util.sentMsgTemplate
+                //         , message, util.messageURL, util.chatBody)
+                // } else {
+                //     //Создание полученного сообщения
+                //     util.printReceivedMessage(util.receivedMsgTemplate, message
+                //         , currentUser, util.messageURL, util.chatBody)
+                // }
+            // })
+
+            util.toggleEmptyChatLabel(util.chatBody)
+        })
+
+        let messageForm = document.querySelector('#msgForm')
+        let newMsgTextarea = messageForm.querySelector('textarea')
+
+        messageForm.addEventListener('submit', function (evt) {
+            evt.preventDefault()
+
+            let newMessage = {
+                author: currentUser.name + ' ' + currentUser.surname,
+                content: newMsgTextarea.value,
+                edited: false
+            }
+
+            util.sendRequest('POST', util.messageURL, newMessage).then(newMessage => {
+                console.log('POST new message request')
+
+                // util.printSentMessage(util.sentMsgTemplate
+                //     , newMessage, util.messageURL, util.chatBody)
+                //
+                // util.toggleEmptyChatLabel(util.chatBody)
+
+                newMsgTextarea.value = ''
+            })
+        })
+        //========Конец скрипта для чата========
     })
 
     //Заполнение таблицы юзеров
-    sendRequest('GET', adminApiURL).then(users => {
-        console.log('GET all request... No reboot!')
+    util.sendRequest('GET', adminApiURL).then(users => {
+        console.log('GET all users request... No reboot!')
 
         for (let i = 0; i < users.length; i++) {
             addUserToTable(users[i])
@@ -347,8 +327,8 @@
             roles: getArrayOfRolesFromSelectElement(newRoles)
         }
 
-        sendRequest('POST', adminApiURL, newUser).then(user => {
-            console.log('POST request')
+        util.sendRequest('POST', adminApiURL, newUser).then(user => {
+            console.log('POST new user request')
 
             addUserToTable(user)
         })
@@ -376,3 +356,81 @@
         }
     })
     //<=======================>
+
+    //Периодический опрос сервера на предмет новых сообщений
+
+    let globalMessages
+    let globalCurrentUser
+    let num = 1
+
+    util.sendRequest('GET', util.messageURL).then(messages => {
+        globalMessages = messages
+        console.log(globalMessages)
+        console.log('globalMessages 1')
+    })
+
+    setInterval(function () {
+        // let localMessages = globalMessages
+        util.sendRequest('GET', util.messageURL).then(updatedMessages => {
+
+            let localMessages = globalMessages
+
+            for (let i = 0; i < updatedMessages.length; i++) {
+                if (updatedMessages.length != localMessages.length) {
+                    console.log('срабатывание на длину ' + num++ + ': длина пришедшего массива - '
+                    + updatedMessages.length + ", длина основного массива - "
+                        + localMessages.length)
+
+
+                    localMessages = updatedMessages
+
+                    util.printChat(updatedMessages, globalCurrentUser)
+                    break
+                }
+
+                // if (updatedMessages[i] != localMessages[i]) {
+                if (JSON.stringify(updatedMessages[i]) != JSON.stringify(localMessages[i])) {
+                    console.log('срабатывание на содержание ' + num++ + ', несовпадение ' +
+                        'в элменте ' + i)
+
+                    console.log('пришедший массив: ')
+                    console.log(updatedMessages)
+                    console.log('эдемент ' + i + ' пришедшего массива: ')
+                    console.log(updatedMessages[i])
+
+                    console.log('основной массив: ')
+                    console.log(localMessages)
+                    console.log('основной массив: ')
+                    console.log('эдемент ' + i + ' основного массива: ')
+                    console.log(localMessages[i])
+
+                    localMessages = updatedMessages
+
+                    util.printChat(updatedMessages, globalCurrentUser)
+                    break
+                }
+            }
+
+            // for (let i = 0; i < updatedMessages.length; i++) {
+            //     if (updatedMessages.length != localMessages.length) {
+            //         localMessages = updatedMessages
+            //
+            //         console.log('срабатывание на длину ' + num++)
+            //         break
+            //     }
+            //
+            //     if (updatedMessages[i] != localMessages[i]) {
+            //         localMessages = updatedMessages
+            //
+            //         console.log('срабатывание на содержание ' + num++ + '/ ' + i)
+            //     }
+            // }
+
+            globalMessages = localMessages
+        })
+
+    }, 15000)
+
+    function compare(a1, a2) {
+        return a1.length == a2.length && a1.every((v,i) => v === a2[i])
+    }
